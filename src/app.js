@@ -8,13 +8,10 @@ const {connectDB}=require("./config/database.js") ;
 
 const {userModel}=require("./models/user.js") ;
 
+app.use( express.json() ) ;
+
 app.post("/signup" , async (req , res ,next) =>{
-    const user = new userModel ({
-        firstName : "Abhinek" ,
-        lastName : "Pandey" ,
-        emailId : "abhinekpk@gmail.com" ,
-        password : "abhinek@123"
-    })
+    const user = new userModel (req.body) ;
     try{
         await user.save() ;
         res.send("SignUp Succesfull !!") ;
