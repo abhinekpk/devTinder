@@ -1,4 +1,5 @@
 const mongoose = require("mongoose") ;
+const validator =require("validator") ;
 
 const userSchema = mongoose.Schema({
     firstName : {
@@ -16,10 +17,20 @@ const userSchema = mongoose.Schema({
         unique : true ,
         lowercase : true ,
         trim : true ,
+        validate(val) {
+            if(!validator.isEmail(val)){
+                throw new Error("User email address is not valid") ;
+            }
+        }
     } ,
     password : {
         type : String ,
         required : true ,
+        validate(val) {
+            if(!validator.isStrongPassword(val)){
+                throw new Error("User Password is not strong") ;
+            }
+        }
     } ,
     gender : {
         type : String ,
@@ -31,7 +42,11 @@ const userSchema = mongoose.Schema({
     photoURL : {
         type : String ,
         default : "https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=" ,
-
+        validate(val) {
+            if(!validator.isURL(val)){
+                throw new Error("User photo URL is not valid") ;
+            }
+        }
     } ,
     about : {
         type : String ,

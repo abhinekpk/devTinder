@@ -18,7 +18,7 @@ app.post("/signup" , async (req , res ,next) =>{
         res.send("SignUp Succesfull !!") ;
     }
     catch(err){
-        res.status(404).send("Error because of : " + err) ;
+        res.status(404).send("Error because of : " + err.message) ;
     }
 } );
 
@@ -26,7 +26,6 @@ app.patch("/user/:userId" , async (req,res,next) =>{
     
     const data = req.body ;
     const userId = req.params?.userId ;
-    console.log(userId);
     try{
 
         const ALLOWED_UPDATES =["gender", "age" , "photoURL" , "about" ,"skills" ] ;
