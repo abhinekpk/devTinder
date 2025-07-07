@@ -8,12 +8,30 @@ const {connectDB}=require("./config/database.js") ;
 
 const {userModel}=require("./models/user.js") ;
 
+const { validateSignUpData } = require("./utlis/validattion.js") ;
+
+const bcrypt = require("bcrypt") ;
+
 app.use( express.json() ) ;
 
 app.post("/signup" , async (req , res ,next) =>{
-    const data = req.body ;
-    const user = new userModel (data) ;
+
     try{
+        // Validation of data
+        validateSignUpData(req) ;
+        const { firstName ,lastName , emailId , password } = req.body ;
+
+        // Encrypt the password
+        const passwordHash = await bcrypt.hash(password,10) ;
+        // Create the new instance of user body
+
+        const user = new userModel ({
+            firstName ,
+            lastName ,
+            emailId ,
+            password : passwordHash 
+        }) ;
+
         await user.save() ;
         res.send("SignUp Succesfull !!") ;
     }
@@ -21,6 +39,7 @@ app.post("/signup" , async (req , res ,next) =>{
         res.status(404).send("Error because of : " + err.message) ;
     }
 } );
+
 
 app.patch("/user/:userId" , async (req,res,next) =>{
     
