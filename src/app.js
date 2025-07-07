@@ -40,6 +40,25 @@ app.post("/signup" , async (req , res ,next) =>{
     }
 } );
 
+app.post("/login" , async (req,res,next) =>{
+    try{
+        const { emailId , password } = req.body ;
+
+        const user = await userModel.findOne({emailId : emailId}) ;
+        if(!user){
+            throw new Error("Invalid cridentials") ;
+        }
+        const isPasswordValid = await bcrypt.compare(password , user.password) ;
+        if(!isPasswordValid){
+            throw new Error("Invalid cridentials") ;
+        }
+
+        res.send("User login succesfull") ;
+    }
+    catch(err){
+        res.status(400).send("Error: " + err.message) ;
+    } 
+}) ;
 
 app.patch("/user/:userId" , async (req,res,next) =>{
     
