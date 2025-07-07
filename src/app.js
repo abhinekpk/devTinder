@@ -11,7 +11,8 @@ const {userModel}=require("./models/user.js") ;
 app.use( express.json() ) ;
 
 app.post("/signup" , async (req , res ,next) =>{
-    const user = new userModel (req.body) ;
+    const data = req.body ;
+    const user = new userModel (data) ;
     try{
         await user.save() ;
         res.send("SignUp Succesfull !!") ;
@@ -21,13 +22,34 @@ app.post("/signup" , async (req , res ,next) =>{
     }
 } );
 
-app.patch("/user" , async (req,res,next) =>{
+app.patch("/user/:userId" , async (req,res,next) =>{
+    
+    const data = req.body ;
+    const userId = req.params?.userId ;
+    console.log(userId);
     try{
-        await userModel.findByIdAndUpdate(req.body.userId,req.body) ;
+
+        const ALLOWED_UPDATES =["gender", "age" , "photoURL" , "about" ,"skills" ] ;
+
+        const isALLOWED = Object.keys(data).every( (k) =>{
+            return ALLOWED_UPDATES.includes(k) 
+        } ) ;
+
+        if(!isALLOWED){
+            throw new Error("Upate not allowed") ;
+        }
+
+        if(data?.skills.length >10){
+            throw new Error("user cannot add more than 10 skills") ;
+        }
+
+        await userModel.findByIdAndUpdate(userId,data, {
+            runValidators  : true ,
+        }) ;
         res.send("User data succesfully updated" ) ;
     }
-    catch{
-        res.status(400).send("Something went wrong") ;  
+    catch(err){
+        res.status(400).send("Something went wrong: " + err.message) ;  
     }
 }) ;
 
@@ -68,9 +90,9 @@ app.get("/feed" , async (req , res ,next) =>{
 } );
 
 app.delete("/user" , async (req , res ,next) =>{
-    
+    const userId = req.body.userId ;
     try{
-        const user = await userModel.findByIdAndDelete(req.body.userId) ;
+        const user = await userModel.findByIdAndDelete(userId) ;
         res.send("User deleted succefully") ;
     }
     catch(err){
