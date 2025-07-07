@@ -10,9 +10,13 @@ const {userModel}=require("./models/user.js") ;
 
 const { validateSignUpData } = require("./utlis/validattion.js") ;
 
+const cookieParser = require("cookie-parser") ;
+
 const bcrypt = require("bcrypt") ;
 
-app.use( express.json() ) ;
+const jwt =require("jsonwebtoken") ;
+
+app.use( express.json() , cookieParser()) ;
 
 app.post("/signup" , async (req , res ,next) =>{
 
@@ -52,8 +56,14 @@ app.post("/login" , async (req,res,next) =>{
         if(!isPasswordValid){
             throw new Error("Invalid cridentials") ;
         }
-
-        res.send("User login succesfull") ;
+        else{
+            // Creating JWT token 
+            const token = await jwt.sign({_id : user._id},"Some@kindofsecret@123") ;
+            
+            //Add the token to the cookies and send the respose back the server
+            res.cookie("token", token) ;
+            res.send("User login succesfull") ;
+        }
     }
     catch(err){
         res.status(400).send("Error: " + err.message) ;
@@ -87,6 +97,28 @@ app.patch("/user/:userId" , async (req,res,next) =>{
     }
     catch(err){
         res.status(400).send("Something went wrong: " + err.message) ;  
+    }
+}) ;
+
+app.get("/profile", async (req,res,next) => {
+    try{
+        const cookies = req.cookies ;
+        const { token } = cookies ;
+        if(!token){
+            throw new Error("User token is not valid") ;
+        }
+
+        const userId = await jwt.verify(token,"Some@kindofsecret@123") ;
+        const {_id} = userId ;
+
+        const user = await userModel.findOne({_id}) ;
+        if(!user){
+            throw new Error("Please login again") ;
+        }
+        res.send(user) ;
+    }
+    catch(err){
+        res.status(400).send("Error: "+err) ;
     }
 }) ;
 
