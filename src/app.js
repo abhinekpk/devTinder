@@ -1,6 +1,6 @@
 const express = require("express") ;
 
-const { adminAuth , userAuth } =require("./middlewares/auth.js") ;
+const { userAuth } =require("./middlewares/auth.js") ;
 
 const app = express() ;
 
@@ -52,16 +52,18 @@ app.post("/login" , async (req,res,next) =>{
         if(!user){
             throw new Error("Invalid cridentials") ;
         }
-        const isPasswordValid = await bcrypt.compare(password , user.password) ;
+        const isPasswordValid = await user.validatePassword(password) ;
         if(!isPasswordValid){
             throw new Error("Invalid cridentials") ;
         }
         else{
             // Creating JWT token 
-            const token = await jwt.sign({_id : user._id},"Some@kindofsecret@123") ;
+            const token = await user.getJWT();
             
             //Add the token to the cookies and send the respose back the server
-            res.cookie("token", token) ;
+            res.cookie("token", token ,{
+                expires : new Date(Date.now() + 7*24 * 3600000)
+            }) ;
             res.send("User login succesfull") ;
         }
     }
@@ -100,21 +102,10 @@ app.patch("/user/:userId" , async (req,res,next) =>{
     }
 }) ;
 
-app.get("/profile", async (req,res,next) => {
+app.get("/profile", userAuth, async (req,res,next) => {
     try{
-        const cookies = req.cookies ;
-        const { token } = cookies ;
-        if(!token){
-            throw new Error("User token is not valid") ;
-        }
-
-        const userId = await jwt.verify(token,"Some@kindofsecret@123") ;
-        const {_id} = userId ;
-
-        const user = await userModel.findOne({_id}) ;
-        if(!user){
-            throw new Error("Please login again") ;
-        }
+        const user = req.body ;
+        
         res.send(user) ;
     }
     catch(err){
