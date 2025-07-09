@@ -18,7 +18,7 @@ const userAuth = async (req,res,next)=>{
             throw new Error("User login again") ;
         }
 
-        req.body= user ;
+        req.user= user ;
         next() ;
     }
     catch(err){ 
