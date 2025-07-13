@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken") ;
-const { userModel } = require("../models/user.js") ;
+const { User } = require("../models/user.js") ;
 
 
 const userAuth = async (req,res,next)=>{
@@ -13,7 +13,7 @@ const userAuth = async (req,res,next)=>{
         const decodedMessage = await jwt.verify(token , "Some@kindofsecret@123") ;
         const { _id } =decodedMessage ;
         
-        const user = await userModel.findById(_id);
+        const user = await User.findById(_id);
         if(!user){
             throw new Error("User login again") ;
         }

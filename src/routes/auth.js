@@ -1,7 +1,7 @@
 const express = require("express") ;
 const authRouter = express.Router() ;
 
-const {userModel}=require("../models/user.js") ;
+const { User }=require("../models/user.js") ;
 const { validateSignUpData } = require("../utlis/validattion.js") ;
 const bcrypt = require("bcrypt") ;
 
@@ -16,7 +16,7 @@ authRouter.post("/signup" , async (req , res ,next) =>{
         const passwordHash = await bcrypt.hash(password,10) ;
         // Create the new instance of user body
 
-        const user = new userModel ({
+        const user = new User ({
             firstName ,
             lastName ,
             emailId ,
@@ -35,7 +35,7 @@ authRouter.post("/login" , async (req,res,next) =>{
     try{
         const { emailId , password } = req.body ;
 
-        const user = await userModel.findOne({emailId : emailId}) ;
+        const user = await User.findOne({emailId : emailId}) ;
         if(!user){
             throw new Error("Invalid cridentials") ;
         }

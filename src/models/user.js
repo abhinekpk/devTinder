@@ -36,6 +36,10 @@ const userSchema = mongoose.Schema({
     } ,
     gender : {
         type : String ,
+        enum : {
+            values : ["male" ,"female" ,"others"] ,
+            message : `{VALUE} is not a valid field` ,
+        }
     } ,
     age : {
         type : Number ,
@@ -77,8 +81,8 @@ userSchema.methods.validatePassword =  async function(passwordInputByUser){
     return isPasswordValid ;
 }
 
-const userModel = mongoose.model("User" , userSchema) ;
+const User = mongoose.model("User" , userSchema) ;
 
 module.exports= {
-    userModel ,
+    User ,
 } ;
