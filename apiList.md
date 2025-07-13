@@ -18,7 +18,7 @@ connectionRequestRouter
 
 userRouter
 -GET/user/connections
--GET/user/request
+-GET/user/request/received
 -GET/user/feed
 
 Staus : - interested ,ignored , accepted , rejected 
