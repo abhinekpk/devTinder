@@ -29,7 +29,7 @@ const validateEditProfile = (req) => {
     allowedEditFields.includes(x)
   );
 
-  return isEditAllowed ;
+  return isEditAllowed;
 };
 
 module.exports = {

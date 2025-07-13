@@ -1,34 +1,30 @@
-const express = require("express") ;
-const app = express() ;
+const express = require("express");
+const app = express();
 
-const {connectDB}=require("./config/database.js") ;
-const cookieParser = require("cookie-parser") ;
-const { authRouter } = require("./routes/auth.js") ;
-const { profileRouter } = require("./routes/profile.js") ;
-const { requestRouter } = require("./routes/request.js") ;
-const { userRouter } = require("./routes/user.js") ;
+const { connectDB } = require("./config/database.js");
+const cookieParser = require("cookie-parser");
+const { authRouter } = require("./routes/auth.js");
+const { profileRouter } = require("./routes/profile.js");
+const { requestRouter } = require("./routes/request.js");
+const { userRouter } = require("./routes/user.js");
 
-app.use( express.json() , cookieParser()) ;
-app.use( "/" , authRouter );
-app.use( "/" , profileRouter );
-app.use( "/" , requestRouter );
-app.use( "/" , userRouter );
-
+app.use(express.json(), cookieParser());
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
+app.use("/", userRouter);
 
 connectDB()
-.then(() => {
-    console.log("Database connection established ... ") ;
-    app.listen(3000 , ()=>{
-        console.log("server running on port 3000 of Abhinek") ;
-    }) ;
-})
-.catch( err => {
-    console.error("Database connection can't be established ... ") ;
-})
+  .then(() => {
+    console.log("Database connection established ... ");
+    app.listen(3000, () => {
+      console.log("server running on port 3000 of Abhinek");
+    });
+  })
+  .catch((err) => {
+    console.error("Database connection can't be established ... ");
+  });
 
-
-// app.patch("/user/:userId" , async (req,res,next) =>{
-    
 //     const data = req.body ;
 //     const userId = req.params?.userId ;
 //     try{
@@ -36,7 +32,7 @@ connectDB()
 //         const ALLOWED_UPDATES =["gender", "age" , "photoURL" , "about" ,"skills" ] ;
 
 //         const isALLOWED = Object.keys(data).every( (k) =>{
-//             return ALLOWED_UPDATES.includes(k) 
+//             return ALLOWED_UPDATES.includes(k)
 //         } ) ;
 
 //         if(!isALLOWED){
@@ -53,14 +49,14 @@ connectDB()
 //         res.send("User data succesfully updated" ) ;
 //     }
 //     catch(err){
-//         res.status(400).send("Something went wrong: " + err.message) ;  
+//         res.status(400).send("Something went wrong: " + err.message) ;
 //     }
 // }) ;
 
 // app.get("/profile", userAuth, async (req,res,next) => {
 //     try{
 //         const user = req.body ;
-        
+
 //         res.send(user) ;
 //     }
 //     catch(err){
@@ -69,7 +65,7 @@ connectDB()
 // }) ;
 
 // app.get("/user" , async (req , res ,next) =>{
-    
+
 //     try{
 //         const user = await userModel.findOne({emailId : req.body.emailId }) ;
 //         if(!user){
@@ -83,11 +79,11 @@ connectDB()
 //     catch(err){
 //         res.status(400).send("Something went wrong") ;
 //     }
-    
+
 // } );
 
 // app.get("/feed" , async (req , res ,next) =>{
-    
+
 //     try{
 //         const user = await userModel.find({}) ;
 //         if(!user){
@@ -101,7 +97,7 @@ connectDB()
 //     catch(err){
 //         res.status(400).send("Something went wrong") ;
 //     }
-    
+
 // } );
 
 // app.delete("/user" , async (req , res ,next) =>{
@@ -113,5 +109,5 @@ connectDB()
 //     catch(err){
 //         res.status(400).send("Something went wrong") ;
 //     }
-    
+
 // } );
